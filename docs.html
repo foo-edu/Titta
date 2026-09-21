@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Titta！ 仕様書・セキュリティ取扱説明書</title>
+<meta name="description" content="ブラウザ型タスク管理アプリ Titta！ の仕様書とセキュリティ取扱説明書。学校導入の検討資料としてお使いください。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F3F0; --surface:#FFFFFF; --surface2:#F7F6F3;
+  --border:#DEDBD4; --border-strong:#C6C2B8;
+  --text:#1B1A17; --text-muted:#6A665E; --text-light:#9B968C;
+  --primary:#2F5D7C; --primary-light:#E4EAEF;
+  --warn-bg:#FAEFC8; --warn-line:#C08A2E;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Inter','Hiragino Sans','Yu Gothic',sans-serif;
+  background:var(--bg); color:var(--text);
+  line-height:1.9; -webkit-font-smoothing:antialiased;
+  font-size:16px;
+}
+.page{max-width:820px;margin:0 auto;padding:0 20px 80px}
+header.site{
+  border-bottom:1px solid var(--border); background:var(--surface);
+  margin-bottom:40px;
+}
+.site-inner{max-width:820px;margin:0 auto;padding:18px 20px;display:flex;align-items:center;gap:10px;color:var(--primary)}
+.wordmark{font-weight:600;font-size:1.2rem;letter-spacing:.01em;color:var(--text)}
+.wordmark .acc{color:var(--primary);font-weight:700;margin-left:-.30em;letter-spacing:-.06em}
+.site-inner .sub{margin-left:auto;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-light)}
+
+h1.doc{font-size:1.75rem;font-weight:600;letter-spacing:.01em;margin:0 0 6px}
+.lead{color:var(--text-muted);font-size:.92rem;margin-bottom:28px}
+
+h2{font-size:1.18rem;font-weight:600;margin:52px 0 16px;padding-bottom:9px;border-bottom:1px solid var(--border-strong);letter-spacing:.01em}
+h3{font-size:1.02rem;font-weight:600;margin:32px 0 10px;color:var(--text)}
+h4{font-size:.94rem;font-weight:600;margin:22px 0 8px;color:var(--text-muted)}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 16px 1.4em}
+li{margin-bottom:7px}
+hr{border:none;border-top:1px solid var(--border);margin:34px 0}
+code{background:var(--surface2);border:1px solid var(--border);padding:1px 5px;font-size:.86em;font-family:'Inter',monospace}
+pre{background:var(--surface2);border:1px solid var(--border);padding:14px 16px;overflow-x:auto;margin:0 0 18px;line-height:1.75}
+pre code{background:none;border:none;padding:0;font-size:.85rem;white-space:pre}
+blockquote{
+  background:var(--primary-light); border-left:3px solid var(--primary);
+  padding:13px 18px; margin:0 0 20px; font-size:.93rem;
+}
+.tw{overflow-x:auto;margin:0 0 20px}
+table{border-collapse:collapse;width:100%;font-size:.89rem;background:var(--surface)}
+th,td{border:1px solid var(--border);padding:9px 12px;text-align:left;vertical-align:top;line-height:1.7}
+th{background:var(--surface2);font-weight:600;white-space:nowrap}
+strong{font-weight:600}
+
+.toc{list-style:none;margin:0;padding:0;columns:2;column-gap:28px}
+.toc li{margin-bottom:6px;break-inside:avoid;font-size:.88rem;list-style:none}
+.toc a{color:var(--text-muted);text-decoration:none;border-bottom:1px solid transparent}
+.toc a:hover{color:var(--primary);border-bottom-color:var(--primary)}
+.tocbox{background:var(--surface);border:1px solid var(--border);padding:20px 22px;margin-bottom:12px}
+.tocbox h2{margin:0 0 14px;font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-light);border:none;padding:0}
+
+.notice{background:var(--warn-bg);border-left:3px solid var(--warn-line);padding:14px 18px;margin:0 0 26px;font-size:.9rem}
+.docsep{margin:72px 0 0;padding-top:0;border-top:2px solid var(--border-strong)}
+footer.site{border-top:1px solid var(--border);margin-top:56px;padding-top:22px;font-size:.8rem;color:var(--text-light)}
+@media(max-width:600px){ .toc{columns:1} body{font-size:15px} .site-inner .sub{display:none} }
+
+@media print{
+  body{background:#fff;font-size:10.5pt;line-height:1.7}
+  header.site{border-bottom:1px solid #999;margin-bottom:22px}
+  .tocbox,.noprint{display:none}
+  .page{max-width:none;padding:0}
+  h2{page-break-after:avoid;margin-top:26px}
+  table,.tw,pre,blockquote,li{page-break-inside:avoid}
+  .docsep{page-break-before:always;border:none}
+  a{color:inherit;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="site-inner">
+    <svg width="22" height="22" viewBox="0 0 20 20" aria-hidden="true"><rect x="1.5" y="11" width="3.4" height="7" fill="currentColor" opacity="0.45"/><rect x="8.3" y="7" width="3.4" height="11" fill="currentColor" opacity="0.72"/><rect x="15.1" y="2" width="3.4" height="16" fill="currentColor"/></svg><span class="wordmark">Titta<span class="acc">！</span></span>
+    <span class="sub">Documentation</span>
+  </div>
+</header>
+
+<div class="page">
+
+  <h1 class="doc">仕様書・セキュリティ取扱説明書</h1>
+  <p class="lead">ブラウザ型タスク管理アプリ「Titta！」の導入検討用資料です。2026年9月版。</p>
+
+  <div class="notice">
+    本アプリは個人が無償で提供しているものです。<strong>現状有姿での提供であり、動作およびデータの保全を保証しません。</strong>
+    個別のデータ復元・削除、学校ごとの個別対応はお受けしていません。導入の可否は各学校の責任においてご判断ください。
+  </div>
+
+  <div class="tocbox noprint">
+    <h2>仕様書</h2>
+    <ul class="toc"><li><a href="#h2110060">1. 概要</a></li><li><a href="#h16513335">2. 動作環境</a></li><li><a href="#h31564847">3. 主な機能</a></li><li><a href="#h903960">4. データの仕組み</a></li><li><a href="#h20721889">5. セキュリティ仕様</a></li><li><a href="#h26119027">6. 使用している外部サービス</a></li><li><a href="#h32352195">7. 想定利用シーン</a></li><li><a href="#h81527022">8. 制限事項・既知の仕様</a></li><li><a href="#h88207528">9. 費用・可用性・保証について</a></li><li><a href="#h49710007">10. お問い合わせ</a></li></ul>
+  </div>
+  <div class="tocbox noprint">
+    <h2>セキュリティ取扱説明書</h2>
+    <ul class="toc"><li><a href="#h71283522">はじめに</a></li><li><a href="#h96121531">第1章　このアプリで「何が起きているか」を知る</a></li><li><a href="#h58742761">第2章　URLが「カギ」になる仕組み</a></li><li><a href="#h4784389">第3章　Googleのサーバー（Firebase）について</a></li><li><a href="#h82943120">第4章　想定されるリスクと対策</a></li><li><a href="#h20442963">第5章　他の教育サービスとの比較</a></li><li><a href="#h7811808">第6章　学校として確認すべき事項</a></li><li><a href="#h21050821">第7章　トラブル発生時の対応</a></li><li><a href="#h69138642">第8章　生徒への指導事項（推奨）</a></li><li><a href="#h68418778">第9章　個人情報の取り扱い</a></li><li><a href="#h7550254">第10章　免責事項</a></li><li><a href="#h24192132">第11章　お問い合わせ</a></li><li><a href="#h73917445">おわりに</a></li></ul>
+  </div>
+
+  <div class="docsep"></div>
+  <h1 class="doc" style="margin-top:40px">Titta！ 仕様書</h1>
+  <p><strong>バージョン：2026年9月現在</strong> <strong>公開URL：<code>https://foo-edu.github.io/Titta/</code></strong></p>
+<hr>
+<h2 id="h2110060">1. 概要</h2>
+<p>Titta！は、<strong>インストール不要・ログイン不要</strong>で使えるブラウザ型タスク管理アプリです。カレンダーで締切と準備期間を視覚的に管理できます。</p>
+<hr>
+<h2 id="h16513335">2. 動作環境</h2>
+<div class="tw"><table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td>動作場所</td><td>ブラウザ（Chrome / Safari / Edge 等）</td></tr><tr><td>インストール</td><td>不要</td></tr><tr><td>ログイン</td><td>不要</td></tr><tr><td>対応端末</td><td>PC・タブレット・スマホ（レスポンシブ対応）</td></tr><tr><td>オフライン</td><td>一部利用可（初回アクセス後）</td></tr><tr><td>料金</td><td>無料</td></tr></tbody></table></div>
+<hr>
+<h2 id="h31564847">3. 主な機能</h2>
+<h3 id="h27941318">3-1. タスク管理</h3>
+<div class="tw"><table><thead><tr><th>機能</th><th>内容</th></tr></thead><tbody><tr><td>タスク追加</td><td>タイトル・締切日・重さ・メモを入力して追加</td></tr><tr><td>タスク編集</td><td>⋮ボタンから編集モーダルを表示</td></tr><tr><td>タスク削除</td><td>タスク詳細画面から削除</td></tr><tr><td>完了チェック</td><td>チェックボックスで当日の完了をマーク。完了タスクは薄く表示</td></tr><tr><td>重さ設定</td><td>大・中・小の3段階。準備期間の長さに対応</td></tr><tr><td>メモ</td><td>タスクごとに任意のメモを記入可能</td></tr></tbody></table></div>
+<h3 id="h31518623">3-2. カレンダー表示</h3>
+<div class="tw"><table><thead><tr><th>機能</th><th>内容</th></tr></thead><tbody><tr><td>月間カレンダー</td><td>当月のカレンダーを表示。前後月の移動可能</td></tr><tr><td>準備期間バー</td><td>締切日から逆算した準備期間を色付きバーで表示</td></tr><tr><td>色分け</td><td>大＝パステルレッド、中＝パステルイエロー、小＝パステルグリーン</td></tr><tr><td>今日ハイライト</td><td>今日の日付を淡い背景と上部の罫線で強調表示</td></tr><tr><td>日付タップ</td><td>カレンダーの日付をタップしてタスクを追加</td></tr><tr><td><strong>予定の移動</strong></td><td><strong>バーをドラッグして別の日に移動。スマホは長押ししてから移動</strong></td></tr></tbody></table></div>
+<h3 id="h77411417">3-2-1. 予定の移動（ドラッグ＆ドロップ）</h3>
+<p>いったん登録したタスクは、カレンダー上のバーをつかんで別の日に動かせます。編集画面を開き直す必要はありません。</p>
+<div class="tw"><table><thead><tr><th>操作</th><th>方法</th></tr></thead><tbody><tr><td>パソコン</td><td>バーをつかんでそのままドラッグ</td></tr><tr><td>スマホ・タブレット</td><td>バーを長押ししてから指を動かす</td></tr><tr><td>取り消し</td><td>ドロップ前に Esc キー（パソコン）</td></tr></tbody></table></div>
+<ul><li>つかんだ日から落とした日までの差分だけ、準備期間ごとタスク全体がずれます</li><li>移動後の準備期間から外れた完了チェックは自動的に外れます</li><li>スマホで長押しせずに動かした場合は、月をめくるスワイプや画面スクロールとして扱われます（誤操作で予定が動くことはありません）</li></ul>
+<hr>
+<h3 id="h27335031">3-3. TASK LIST</h3>
+<div class="tw"><table><thead><tr><th>機能</th><th>内容</th></tr></thead><tbody><tr><td>表示内容</td><td>選択した日付のタスクを一覧表示</td></tr><tr><td>日付移動</td><td>＜＞ボタンで前後の日に移動</td></tr><tr><td>今日に戻る</td><td>「今日」ボタンで当日表示に戻る</td></tr><tr><td>完了タスク</td><td>リスト下部に薄く表示</td></tr></tbody></table></div>
+<h3 id="h72553164">3-4. 通知機能</h3>
+<div class="tw"><table><thead><tr><th>タイミング</th><th>内容</th></tr></thead><tbody><tr><td>準備開始日</td><td>「そろそろ準備を始めよう」のトースト通知</td></tr><tr><td>締切2日前</td><td>「締切が近い」の警告通知</td></tr><tr><td>締切当日</td><td>「今日が締切」の緊急通知</td></tr><tr><td>ブラウザ通知</td><td>許可した場合、ブラウザのプッシュ通知も表示</td></tr><tr><td>効果音</td><td>通知時に音が鳴る（Web Audio API使用）</td></tr></tbody></table></div>
+<h3 id="h74600228">3-5. 共有機能</h3>
+<div class="tw"><table><thead><tr><th>機能</th><th>内容</th></tr></thead><tbody><tr><td>自分専用URLをコピー</td><td>自分のタスクデータにアクセスできるURLをコピー</td></tr><tr><td>友だちに共有</td><td>個人データなしのアプリURLをコピー（新規ユーザー向け）</td></tr></tbody></table></div>
+<h3 id="h4424227">3-6. 設定</h3>
+<div class="tw"><table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td>言語</td><td>日本語 / English 切替（デフォルト：日本語）</td></tr><tr><td>大タスクの準備日数</td><td>デフォルト7日（1〜365日で変更可）</td></tr><tr><td>中タスクの準備日数</td><td>デフォルト3日（1〜365日で変更可）</td></tr><tr><td>小タスクの準備日数</td><td>デフォルト1日（0〜365日で変更可）</td></tr><tr><td>ブラウザ通知</td><td>許可 / ブロックの確認・設定</td></tr></tbody></table></div>
+<h3 id="h21568761">3-7. チュートリアル</h3>
+<div class="tw"><table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td>起動タイミング</td><td>初回アクセス時に自動で開始</td></tr><tr><td>ステップ数</td><td>全20ステップ</td></tr><tr><td>内容</td><td>アプリの基本操作を順番に案内</td></tr><tr><td>インタラクティブ</td><td>実際にタスクを追加・チェックする操作を含む</td></tr><tr><td>スポットライト</td><td>説明中の要素を明るく照らし、他を暗くして注目させる</td></tr><tr><td>再実行</td><td>ブラウザのコンソールからいつでも再実行可能</td></tr><tr><td>説明の位置</td><td>画面下部中央に固定。ステップごとに動かないため押し間違えにくい</td></tr><tr><td>説明の移動</td><td>対象と重なる場合はドラッグ（スマホは長押し）で移動可能</td></tr><tr><td>改行</td><td>文節の切れ目だけで折り返すため、画面幅が変わっても読みやすい</td></tr></tbody></table></div>
+<hr>
+<h3 id="h41110300">3-8. デザイン方針</h3>
+<p>スウェーデン／北欧のデザイン思想にならい、装飾を足すのではなく削る方向で設計しています。</p>
+<div class="tw"><table><thead><tr><th>項目</th><th>方針</th></tr></thead><tbody><tr><td>配色</td><td>生成りの紙のような暖色ニュートラルを下地に、アクセントはくすんだ北欧ブルー</td></tr><tr><td>作業期間の色</td><td>大・中・小は淡いパステルの赤・黄・緑。文字は濃いインクを重ねて可読性を確保</td></tr><tr><td>形</td><td>角丸をほぼ使わず直線的に。影は使わず、髪の毛のように細い罫線で区切る</td></tr><tr><td>文字</td><td>Inter を基本とし、見出しは大文字＋字間を広めに</td></tr><tr><td>アイコン</td><td>絵文字は使わず、単線のSVGアイコンに統一</td></tr><tr><td>ロゴ</td><td>3本の縦棒（大・中・小の準備期間）を抽象化した幾何学的なマーク</td></tr></tbody></table></div>
+<p>絵文字を排したのは、装飾性を抑える目的に加え、端末やOSによって見え方が変わらないようにするためです。</p>
+<p>準備期間のバーは淡いパステルですが、上に載る文字は白ではなく濃い同系色にしています。パステル地に白文字だと読めなくなるためで、<strong>すべての文字と背景の組み合わせがWCAG AA基準（コントラスト比4.5:1）を満たすことを実測で確認しています</strong>（実測値5.75〜8.02）。</p>
+<hr>
+<h2 id="h903960">4. データの仕組み</h2>
+<h3 id="h46865970">4-1. 個人IDとURL</h3>
+<p>初回アクセス時に<strong>ランダムな個人ID（16文字）</strong>が自動生成され、URLのハッシュ（<code>#</code>以降）に埋め込まれます。</p>
+<pre><code>例：https://foo-edu.github.io/Titta/#p_k4m9x2q7r3n8v5c1</code></pre>
+<p>この個人IDがデータの「鍵」です。同じURLを開けば同じタスクデータにアクセスできます。</p>
+<p>IDは暗号用の乱数生成器（<code>crypto.getRandomValues</code>）で作られ、使う文字は数字と小文字アルファベットの36種類です。組み合わせは約8×10^24通り（8兆の1兆倍）あります。</p>
+<p>なお個人IDは <code>?</code> ではなく <code>#</code>（ハッシュ）に置いています。ハッシュはブラウザからサーバーへ送信されないため、GitHubやGoogleのアクセスログに個人IDが記録されません。</p>
+<h3 id="h26983107">4-2. データ保存の流れ</h3>
+<pre><code>操作する
+  ↓
+ブラウザ内（ローカルストレージ）に保存
+  ↓
+Firebase（Googleのクラウド）に同期
+  ↓
+同じURLを開いている他の端末にリアルタイム反映</code></pre>
+<h3 id="h51046473">4-3. 保存されるデータ一覧</h3>
+<div class="tw"><table><thead><tr><th>データ</th><th>保存場所</th></tr></thead><tbody><tr><td>タスク一覧（タイトル・締切・重さ・メモ・完了状態）</td><td>ローカル＋Firebase</td></tr><tr><td>設定（準備日数・言語）</td><td>ローカルのみ</td></tr><tr><td>個人ID</td><td>ローカルのみ</td></tr><tr><td>チュートリアル完了フラグ</td><td>ローカルのみ</td></tr></tbody></table></div>
+<p><strong>保存されない情報：氏名・学年・クラス・メールアドレス・位置情報・端末情報</strong></p>
+<hr>
+<h2 id="h20721889">5. セキュリティ仕様</h2>
+<h3 id="h66041177">5-1. 通信の暗号化</h3>
+<p>すべての通信はHTTPS（TLS暗号化）を使用しています。第三者による盗聴はできません。</p>
+<h3 id="h67749154">5-2. 認証方式</h3>
+<p>ログイン認証は使用しません。個人IDを含むURLが「パスワード」の役割を果たします。</p>
+<h3 id="h21975268">5-3. Firebaseのアクセス制御</h3>
+<p>個人IDのパスに対応するデータは、そのIDを知っている人なら読み書きできます。IDはランダムな16文字のため、第三者が推測することは事実上不可能です。</p>
+<p>Firebaseのセキュリティルールを設定済みで、次の制限がかかっています。</p>
+<div class="tw"><table><thead><tr><th>制限</th><th>内容</th></tr></thead><tbody><tr><td>ID形式の検証</td><td>正しい形式の個人IDのパス以外は読み書きを拒否</td></tr><tr><td>一覧取得の禁止</td><td>「全ユーザーのデータ一覧」は取得できない（IDを知っている1件のみ）</td></tr><tr><td>データ形式の検証</td><td>締切日・重さなどが正しい形式でないデータは保存を拒否</td></tr><tr><td>データ量の上限</td><td>1人あたり最大500件、タイトル200字、メモ1000字まで</td></tr></tbody></table></div>
+<h3 id="h15186891">5-4. 入力データの検証</h3>
+<p>タスクデータは「URL」「Firebase」「端末内保存」の3経路から読み込まれます。いずれも第三者が中身を差し替えられる可能性があるため、<strong>画面に表示する前に必ず検証</strong>しています。想定外の項目・不正な形式・過大なデータは、表示前に除去または安全な値へ置き換えられます。</p>
+<p>これにより、細工したURLを踏ませて不正なスクリプトを実行させる攻撃（クロスサイトスクリプティング）を防いでいます。</p>
+<h3 id="h85089127">5-5. リスク一覧</h3>
+<div class="tw"><table><thead><tr><th>リスク</th><th>レベル</th><th>条件</th><th>対策</th></tr></thead><tbody><tr><td>URLを知られてデータを改ざんされる</td><td>中</td><td>URLを他人に教えた場合</td><td>URLを教えない運用ルールの徹底</td></tr><tr><td>外部サーバー（Google）へのデータ送信</td><td>低</td><td>アプリ使用中は常時</td><td>学校のICTポリシー確認</td></tr><tr><td>共有端末での閲覧</td><td>低〜中</td><td>端末を他者と共有する場合</td><td>1人1台端末なら問題なし</td></tr><tr><td>IDの推測によるアクセス</td><td>非常に低</td><td>16文字ランダムのため現実的でない</td><td>対策済み</td></tr><tr><td>不正なURLによるスクリプト実行</td><td>非常に低</td><td>—</td><td>対策済み（5-4の入力検証）</td></tr><tr><td>機械的な大量書き込みによる停止</td><td>低</td><td>悪意ある第三者が意図的に行った場合</td><td>対策済み（5-3のデータ量上限）。詳細は8章</td></tr></tbody></table></div>
+<hr>
+<h2 id="h26119027">6. 使用している外部サービス</h2>
+<div class="tw"><table><thead><tr><th>サービス</th><th>運営</th><th>用途</th><th>データ送信内容</th></tr></thead><tbody><tr><td>GitHub Pages</td><td>Microsoft</td><td>アプリの公開・ホスティング</td><td>なし（静的ファイル配信のみ）</td></tr><tr><td>Firebase Realtime Database</td><td>Google</td><td>タスクデータのクラウド同期</td><td>タスクデータ（個人情報を含まない）</td></tr><tr><td>Google Fonts</td><td>Google</td><td>フォントの読み込み</td><td>アクセスIPのみ（Googleの標準ログ）</td></tr></tbody></table></div>
+<hr>
+<h2 id="h32352195">7. 想定利用シーン</h2>
+<div class="tw"><table><thead><tr><th>シーン</th><th>運用方法</th></tr></thead><tbody><tr><td>学校（タブレット）</td><td>タブレット1台でタスク管理。URLをブックマーク</td></tr><tr><td>自宅・外出先（スマホ）</td><td>タブレットと同じURLをスマホでブックマーク。自動同期</td></tr><tr><td>同期を止めたい場合</td><td>同期を個別に無効化する設定は用意していません（9-4参照）</td></tr></tbody></table></div>
+<hr>
+<h2 id="h81527022">8. 制限事項・既知の仕様</h2>
+<ul><li>タスクデータは<strong>URLを失うと復元できない</strong>（URLのブックマーク推奨）</li><li>設定（準備日数・言語）は<strong>端末ごとに保存</strong>される（他端末には同期されない）</li><li>ブラウザのデータ削除を行うと<strong>ローカルデータが消える</strong>（Firebaseのデータは残る）</li><li>同じURLを複数端末で同時編集した場合、<strong>最後に保存した内容が反映</strong>される</li><li>タスクは<strong>1人あたり500件まで</strong>（タイトル200字・メモ1000字まで）</li><li><strong>クラウド同期を利用者側で無効にする設定はありません</strong>（常時有効）</li><li>削除したタスクをあとから復元する機能はありません</li></ul>
+<h2 id="h88207528">9. 費用・可用性・保証について</h2>
+<h3 id="h20301504">9-1. 費用</h3>
+<p>本アプリはFirebaseの無料プラン（Spark）で運用しています。課金経路が存在しないため、<strong>利用校・利用者に費用が発生することはありません。</strong> アプリ内に広告はなく、有料機能もありません。</p>
+<h3 id="h13142253">9-2. 無料枠は全利用者で共有します</h3>
+<p>重要な点として、<strong>本アプリを使うすべての学校・生徒が、ひとつのデータベースの無料枠（保存1GB／月間転送10GB）を共有します。</strong></p>
+<p>利用が広がった場合、次のことが起こり得ます。</p>
+<ul><li>無料枠に達した時点で、クラウド同期が一時的に停止する</li><li>停止中も各端末内のデータで通常どおり使える（タスクが消えるわけではない）</li><li>端末間の同期のみが止まる</li></ul>
+<p>1人あたりのデータ量に上限（500件・タイトル200字・メモ1000字）を設けていますが、利用規模によっては枯渇する可能性を排除できません。</p>
+<h3 id="h93107515">9-3. 悪意ある大量書き込みへの備え</h3>
+<p>第三者が機械的に大量のデータを書き込み、無料枠を消費させる可能性があります。対策として5-3のデータ量上限を設けているほか、必要に応じてApp Check（自動化されたアクセスを遮断する仕組み）を有効化します。App Checkは生徒側の操作を一切変えずに導入できます。</p>
+<h3 id="h44834684">9-4. 無保証</h3>
+<p>本アプリは個人が副業として無償で提供しているものです。以下をご了承のうえご利用ください。</p>
+<ul><li><strong>現状有姿での提供</strong>であり、動作およびデータの保全を保証しません</li><li>予告なく<strong>仕様の変更・サービスの停止</strong>を行う場合があります</li><li><strong>個別のデータ復元・削除の依頼には応じられません</strong></li><li>本アプリの利用により生じた損害について、<strong>責任を負いかねます</strong></li><li>クラウド同期を利用者側で無効化する設定は提供していません</li></ul>
+<p>学校のICTポリシーで外部クラウドサービスの利用が認められない場合は、<strong>本アプリの導入を見送ってください。</strong></p>
+<p>成績・出欠・個人情報など、<strong>学校の正式な記録の管理には使用しないでください。</strong> 本アプリは生徒個人の予定管理を想定しています。</p>
+<hr>
+<h2 id="h49710007">10. お問い合わせ</h2>
+<p>本アプリに関するご質問・ご要望は、公開元のnote記事のコメント欄へお寄せください。</p>
+<pre><code>【★要置換：note記事のURL】</code></pre>
+<p>いただいた内容にはできる範囲で回答しますが、<strong>回答を保証するものではありません。</strong> また、個別のデータ復元・削除、学校ごとの個別対応（機能追加・カスタマイズ等）はお受けしていません。</p>
+<hr>
+<p>*本仕様書の内容は予告なく更新されることがあります。最新版は上記の公開元をご確認ください。*</p>
+
+  <div class="docsep"></div>
+  <h1 class="doc" style="margin-top:40px">Titta！ セキュリティ取扱説明書</h1>
+  <hr>
+<h2 id="h71283522">はじめに</h2>
+<p>この説明書は、「Titta！」を学校現場で安全に使用するために必要なセキュリティ情報をまとめたものです。技術的な知識がなくても理解できるよう、平易な言葉で説明しています。</p>
+<blockquote>「Titta（ティッタ）」はスウェーデン語で「見る」を意味します。</blockquote>
+<hr>
+<h2 id="h96121531">第1章　このアプリで「何が起きているか」を知る</h2>
+<h3 id="h94066309">アプリを開くとき、何が起きているか</h3>
+<p>ブラウザでURLにアクセスすると、以下のことが起きています。</p>
+<pre><code>① アプリの画面データがGitHubのサーバーから届く
+　（HTMLファイルをダウンロードするイメージ）
+
+② タスクデータがGoogleのサーバー（Firebase）から届く
+
+③ 画面が表示される</code></pre>
+<p>操作するたびに、変更内容がGoogleのサーバーに送信・保存されます。これによって複数の端末でデータが同期されます。</p>
+<hr>
+<h3 id="h8210337">「データ」とは何か</h3>
+<p>このアプリが扱うデータは<strong>タスクの内容だけ</strong>です。</p>
+<p><strong>送信・保存されるもの</strong></p>
+<ul><li>タスクのタイトル（例：「数学の宿題」）</li><li>締切日</li><li>重さ（大・中・小）</li><li>メモ</li><li>完了しているかどうか</li></ul>
+<p><strong>一切送信・保存されないもの</strong></p>
+<ul><li>氏名・生年月日・学年・クラス</li><li>メールアドレス・電話番号</li><li>学校名・住所</li><li>端末の情報・位置情報</li><li>パスワード（そもそも存在しない）</li></ul>
+<blockquote><strong>ポイント：このアプリは「誰のタスクか」を知りません。タスクの内容しか知らないアプリです。</strong></blockquote>
+<hr>
+<h2 id="h58742761">第2章　URLが「カギ」になる仕組み</h2>
+<h3 id="h2797568">個人IDとは</h3>
+<p>このアプリはログインの代わりに、<strong>ランダムに生成された個人ID（16文字）</strong>でデータを管理します。</p>
+<pre><code>https://foo-edu.github.io/Titta/#p_k4m9x2q7r3n8v5c1
+                                         ↑
+                          これが個人ID（ランダムな16文字）</code></pre>
+<p>組み合わせは約8×10^24通り（8兆の1兆倍）です。仮に1秒間に100万回試しても、すべて試し終えるには宇宙の年齢より長い時間がかかります。</p>
+<p>初めてアプリを開いたとき、この個人IDが自動的に作られてURLに埋め込まれます。以降、このURLがデータへのアクセスキーになります。</p>
+<h3 id="h55116013">わかりやすい例え</h3>
+<blockquote><strong>自分専用の鍵付き日記帳のようなものです。</strong><br>鍵の番号を知っている人だけが開けられます。鍵番号を誰かに教えない限り、他人には開けられません。</blockquote>
+<h3 id="h69415744">URLを失うとどうなるか</h3>
+<p>URLを失う（ブックマークを消す・URLをメモしていない）と、自分のデータにアクセスできなくなります。データ自体はGoogleのサーバーに残りますが、取り出す手段がありません。</p>
+<blockquote><strong>→ URLは必ずブックマークするよう指導してください。</strong></blockquote>
+<hr>
+<h2 id="h4784389">第3章　Googleのサーバー（Firebase）について</h2>
+<h3 id="h35744264">Firebaseとは</h3>
+<p>Firebaseは<strong>Googleが運営するクラウドデータサービス</strong>です。世界中の企業・学校・医療機関などで広く使われています。</p>
+<h3 id="h78274105">Googleはデータを何に使うか</h3>
+<p>FirebaseはGoogleのサービスですが、<strong>Googleがユーザーのタスクデータを広告や分析に使うことはありません</strong>。FirebaseはGoogleとは独立したデータ保管庫として機能します（Googleの利用規約で定められています）。</p>
+<h3 id="h53701967">データはどこに保存されるか</h3>
+<p>このアプリのデータはGoogleのデータセンター（アジア東南部）に保存されています。</p>
+<h3 id="h55732986">通信は安全か</h3>
+<p>アプリとGoogleのサーバー間の通信はすべて<strong>HTTPS（暗号化通信）</strong>で保護されています。これはインターネットバンキングやオンラインショッピングと同じ水準の暗号化です。通信の途中で第三者に内容を盗み見られることはありません。</p>
+<h3 id="h50492066">Googleのセキュリティ水準</h3>
+<p>Googleのサーバーは以下の国際セキュリティ基準に準拠しています。</p>
+<div class="tw"><table><thead><tr><th>認証</th><th>内容</th></tr></thead><tbody><tr><td>ISO/IEC 27001</td><td>情報セキュリティ管理の国際標準</td></tr><tr><td>SOC 2</td><td>クラウドサービスの安全性評価基準</td></tr><tr><td>GDPR対応</td><td>EU一般データ保護規則に準拠</td></tr></tbody></table></div>
+<hr>
+<h2 id="h82943120">第4章　想定されるリスクと対策</h2>
+<h3 id="h34466121">リスク①　URLを他人に知られる</h3>
+<div class="tw"><table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td><strong>何が起きるか</strong></td><td>他人が自分のタスクを見る・書き換える・削除できる</td></tr><tr><td><strong>どんな時に起きるか</strong></td><td>URLを友人に送る・スクリーンショットを共有する・画面を見られるなど</td></tr><tr><td><strong>深刻度</strong></td><td>中（タスクデータの改ざん・消去が起きる可能性）</td></tr><tr><td><strong>個人情報漏洩の危険</strong></td><td>低（氏名等の個人情報はデータに含まれない）</td></tr><tr><td><strong>対策</strong></td><td>URLを他人に教えない指導を徹底する</td></tr><tr><td><strong>もし起きたら</strong></td><td>新しいURLで使い始める（旧データは引き継げないが数分で再開可能）</td></tr></tbody></table></div>
+<hr>
+<h3 id="h75634783">リスク②　外部サービス（Google）へのデータ送信</h3>
+<div class="tw"><table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td><strong>何が起きるか</strong></td><td>タスクデータがGoogleのサーバーに送信・保存される</td></tr><tr><td><strong>どんな時に起きるか</strong></td><td>アプリを使用しているとき常時</td></tr><tr><td><strong>深刻度</strong></td><td>低（個人情報を含まないデータのため）</td></tr><tr><td><strong>対策</strong></td><td>学校のICTポリシーで外部サービス利用が許可されているか確認する</td></tr><tr><td><strong>ポリシーに抵触する場合</strong></td><td>本アプリの導入を見送ってください。同期を個別に無効化する設定は用意していません</td></tr></tbody></table></div>
+<hr>
+<h3 id="h34796962">リスク③　端末の紛失・他者への貸し出し</h3>
+<div class="tw"><table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td><strong>何が起きるか</strong></td><td>ブラウザの履歴・ブックマークからURLを見られる</td></tr><tr><td><strong>どんな時に起きるか</strong></td><td>端末を他者と共有・貸し出す場合</td></tr><tr><td><strong>深刻度</strong></td><td>低（1人1台端末なら発生しない）</td></tr><tr><td><strong>対策</strong></td><td>1人1台端末の運用を徹底する</td></tr></tbody></table></div>
+<hr>
+<h3 id="h19840165">リスク④　他人のURLへの不正アクセス（いたずら）</h3>
+<div class="tw"><table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td><strong>何が起きるか</strong></td><td>他の生徒のURLを入手して、タスクを書き換える・削除する</td></tr><tr><td><strong>どんな時に起きるか</strong></td><td>生徒同士でURLを共有・のぞき見するなど</td></tr><tr><td><strong>深刻度</strong></td><td>中（いじめ・嫌がらせに発展する可能性）</td></tr><tr><td><strong>対策</strong></td><td>URLの取り扱いについてモラル教育を行う</td></tr><tr><td><strong>もし起きたら</strong></td><td>被害を受けた生徒は新URLで即座に再開可能。必要に応じ開発者がFirebaseからデータを削除</td></tr></tbody></table></div>
+<hr>
+<h3 id="h74338612">リスク⑤　第三者によるURLの推測</h3>
+<div class="tw"><table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td><strong>何が起きるか</strong></td><td>悪意ある第三者がURLを推測してデータにアクセスする</td></tr><tr><td><strong>深刻度</strong></td><td>非常に低</td></tr><tr><td><strong>理由</strong></td><td>個人IDは16文字のランダムな英数字。約8×10^24通りあり、総当たりは現実的でない</td></tr><tr><td><strong>補足</strong></td><td>「全ユーザーの一覧」を取得することはできません。IDを知っている1件しか読めない設定です</td></tr></tbody></table></div>
+<hr>
+<h3 id="h72675182">リスク⑥　細工されたURLによる不正な動作</h3>
+<div class="tw"><table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td><strong>何が起きるか</strong></td><td>悪意ある第三者が細工したURLを生徒に踏ませ、ブラウザ上で不正な動作をさせる</td></tr><tr><td><strong>どんな時に起きるか</strong></td><td>SNSやメッセージで送られたリンクを不用意に開いた場合</td></tr><tr><td><strong>深刻度</strong></td><td>非常に低（対策済み）</td></tr><tr><td><strong>対策</strong></td><td>アプリは受け取ったデータを画面に出す前にすべて検証し、不正な内容を除去します</td></tr><tr><td><strong>指導事項</strong></td><td>知らない人から送られた「Titta！」のリンクは開かないよう伝えてください</td></tr></tbody></table></div>
+<hr>
+<h3 id="h63897589">リスク⑦　機械的な大量書き込みによるサービス停止</h3>
+<div class="tw"><table><thead><tr><th>項目</th><th>内容</th></tr></thead><tbody><tr><td><strong>何が起きるか</strong></td><td>悪意ある第三者が自動プログラムで大量のデータを書き込み、無料枠を使い切らせる</td></tr><tr><td><strong>どんな時に起きるか</strong></td><td>アプリが広く公開され、悪意ある第三者の目に触れた場合</td></tr><tr><td><strong>深刻度</strong></td><td>低（対策済み。ただし完全には防げない）</td></tr><tr><td><strong>影響</strong></td><td><strong>データが盗まれることはありません。</strong>データベースが一時的に応答しなくなり、生徒がタスクを開けなくなります</td></tr><tr><td><strong>対策</strong></td><td>1回に保存できるデータ量に上限を設定済み。開発者が使用量を監視しています</td></tr><tr><td><strong>もし起きたら</strong></td><td>開発者が不正データを削除し、必要に応じて自動書き込みを遮断する仕組み（App Check）を有効化します。生徒側の操作は変わりません</td></tr><tr><td><strong>費用面</strong></td><td>無料プランのため、<strong>想定外の請求が発生することはありません</strong></td></tr></tbody></table></div>
+<hr>
+<h2 id="h20442963">第5章　他の教育サービスとの比較</h2>
+<div class="tw"><table><thead><tr><th>サービス</th><th>ログイン</th><th>氏名等の個人情報</th><th>外部サーバー</th></tr></thead><tbody><tr><td><strong>Titta！</strong></td><td><strong>不要</strong></td><td><strong>収集しない</strong></td><td>Googleのタスクデータのみ</td></tr><tr><td>Google Classroom</td><td>必要</td><td>収集する</td><td>Google</td></tr><tr><td>Microsoft Teams</td><td>必要</td><td>収集する</td><td>Microsoft</td></tr><tr><td>一般的なTodoアプリ</td><td>必要</td><td>収集する</td><td>各社</td></tr></tbody></table></div>
+<blockquote><strong>Titta！は、一般的な教育サービスより収集する情報が少ないアプリです。</strong></blockquote>
+<hr>
+<h2 id="h7811808">第6章　学校として確認すべき事項</h2>
+<p>学校のICT担当者・管理職が確認すべき項目をまとめます。</p>
+<h3 id="h89343944">チェックリスト</h3>
+<pre><code>□ 学校のICTポリシーで外部クラウドサービスの利用が許可されているか
+□ Googleのサービス（Firebase）の利用に問題がないか
+□ 生徒への「URL取り扱いルール」の指導ができるか
+□ 保護者への説明・同意取得が必要かどうか
+□ 本アプリが「無保証・個別サポートなし」で提供されていることを理解しているか
+□ 重要な記録には使わない運用ルールを決めているか</code></pre>
+<hr>
+<h2 id="h21050821">第7章　トラブル発生時の対応</h2>
+<p><strong>個別のデータ復元・削除の依頼はお受けしていません。</strong> 学校内で対応できる方法を示します。</p>
+<div class="tw"><table><thead><tr><th>トラブル</th><th>対応方法</th></tr></thead><tbody><tr><td>URLを他人に教えてしまった</td><td>ブラウザのデータを消して開き直すと新しいURLが発行されます。以後はそちらを使ってください（旧データは引き継がれません）</td></tr><tr><td>タスクを勝手に消された・書き換えられた</td><td>上と同じ手順で新しいURLに移ってください</td></tr><tr><td>データが消えた</td><td><strong>復元する手段はありません。</strong> 重要な予定は手帳等にも控えてください</td></tr><tr><td>不適切な内容が書き込まれた</td><td>そのURLの使用をやめ、新しいURLに移ってください</td></tr><tr><td>同期されない（複数端末で内容が違う）</td><td>無料枠超過で同期が一時停止している可能性があります。時間をおいてお試しください。各端末内のデータは残っています</td></tr><tr><td>アプリが開かない</td><td>通信環境をご確認のうえ、時間をおいてお試しください</td></tr></tbody></table></div>
+<hr>
+<h2 id="h69138642">第8章　生徒への指導事項（推奨）</h2>
+<p>以下の内容を生徒に伝えることを推奨します。</p>
+<h3 id="h66768690">必ず伝えること</h3>
+<ol><li><strong>URLは自分だけの鍵です。他人に教えてはいけません。</strong></li><li><strong>URLは必ずブックマークしてください。失うと復元できません。</strong></li><li><strong>タスクに氏名・住所・電話番号などの個人情報を入力しないでください。</strong></li><li><strong>知らない人から送られた「Titta！」のリンクは開かないでください。</strong></li></ol>
+<h3 id="h55667405">できれば伝えること</h3>
+<ol><li>他人のURLを使ってタスクを書き換えることは、器物損壊や不正アクセスにあたる可能性があります。</li><li>スクリーンショットをSNSに投稿すると、URLが見えてしまう場合があります。<strong>投稿前にアドレスバーが写っていないか確認してください。</strong></li></ol>
+<hr>
+<h2 id="h68418778">第9章　個人情報の取り扱い</h2>
+<h3 id="h993837">収集しない情報</h3>
+<p>本アプリは、<strong>氏名・生年月日・学年・クラス・メールアドレス・電話番号・学校名・住所・位置情報を一切収集しません。</strong> アカウント登録もありません。</p>
+<h3 id="h50895995">保存される情報</h3>
+<p>保存されるのはタスクの内容（タイトル・締切日・重さ・メモ・完了状態）のみです。これらは自動生成されたランダムな個人IDと結び付けて保存されますが、<strong>そのIDから利用者個人を特定することはできません。</strong></p>
+<h3 id="h79777844">第三者提供</h3>
+<p>収集した情報を第三者に販売・提供することはありません。アプリ内に広告はなく、アクセス解析ツールも導入していません。</p>
+<h3 id="h31449994">保存先と保存期間</h3>
+<p>データはGoogleのFirebase（アジア東南部のデータセンター）に保存されます。保存期間の定めはなく、明示的な削除機能もありません。<strong>利用をやめる場合は、URLを破棄してください。</strong> URLを失えば、そのデータには誰もアクセスできなくなります。</p>
+<h3 id="h60710883">生徒への指導について</h3>
+<p>上記のとおり個人情報は収集しませんが、<strong>生徒がタスクのタイトルやメモに自分で個人情報を書き込むことは技術的に可能です。</strong> 氏名・住所・電話番号などを入力しないよう、あらかじめご指導ください。</p>
+<hr>
+<h2 id="h7550254">第10章　免責事項</h2>
+<p>本アプリは個人が副業として無償で提供しているものです。ご利用にあたっては以下にご同意ください。</p>
+<ol><li>本アプリは<strong>現状有姿</strong>で提供され、動作およびデータの保全を保証しません</li><li>予告なく<strong>仕様の変更・サービスの停止</strong>を行う場合があります</li><li><strong>個別のデータ復元・削除の依頼には応じられません</strong></li><li>学校ごとの<strong>個別対応（機能追加・カスタマイズ等）はお受けしていません</strong></li><li>本アプリの利用により生じたいかなる損害についても、<strong>責任を負いかねます</strong></li><li>成績・出欠・個人情報など、<strong>学校の正式な記録の管理には使用しないでください</strong></li></ol>
+<p>導入の可否は、各学校の責任においてご判断ください。学校のICTポリシーで外部クラウドサービスの利用が認められない場合は、<strong>導入を見送ってください。</strong></p>
+<hr>
+<h2 id="h24192132">第11章　お問い合わせ</h2>
+<p>ご質問・ご要望は、公開元のnote記事のコメント欄へお寄せください。</p>
+<pre><code>【★要置換：note記事のURL】</code></pre>
+<p>同じ疑問を持つ先生方の参考になるよう、<strong>公開の場でのやり取り</strong>とさせていただいています。いただいた内容にはできる範囲で回答しますが、<strong>回答を保証するものではありません。</strong></p>
+<hr>
+<h2 id="h73917445">おわりに</h2>
+<p>このアプリは「ログイン不要・個人情報不要」という設計により、<strong>万が一トラブルが起きても個人の特定につながりにくい</strong>ことを最大の安全策としています。</p>
+<p>完全にリスクがゼロのサービスは存在しません。無保証での提供であることをご理解いただいたうえで、適切な運用ルールのもとでお使いいただければ幸いです。</p>
+<hr>
+<p>*本説明書の内容は予告なく更新されることがあります。最新版は上記の公開元をご確認ください。*</p>
+
+  <footer class="site">
+    Titta！ — 個人が副業として無償提供しているタスク管理アプリです。本資料の内容は予告なく更新されることがあります。
+  </footer>
+</div>
+</body>
+</html>
