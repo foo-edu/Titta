@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
 <title>Titta！</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1612,6 +1614,14 @@ async function loadInitialTasks() {
   if (hash && hash.startsWith('p_')) {
     // 形式が不正なIDは採用しない（不正なFirebaseパスを指定されるのを防ぐ）
     if (isValidPersonalId(hash)) {
+      // この端末が発行したIDではないIDで開かれた場合、
+      // 共有URLを踏んだか、ホーム画面から起動したかのどちらか。
+      // いずれも「初めての利用者」ではないのでチュートリアルは出さない。
+      // （チュートリアル済みフラグは端末ごとの保存で、共有先やホーム画面アプリは
+      //   別の保管庫を持つため、これを見ないと毎回初回扱いになってしまう）
+      if (localStorage.getItem('personalId') !== hash) {
+        localStorage.setItem('tutorialDone', '1');
+      }
       localStorage.setItem('personalId', hash);
     } else {
       const pid = localStorage.getItem('personalId') || genPersonalId();
