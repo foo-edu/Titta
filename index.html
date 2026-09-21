@@ -1359,7 +1359,7 @@ textarea { resize: vertical; min-height: 56px; }
     </div>
     <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);text-align:center">
       <span style="font-size:0.72rem;color:var(--text-light);letter-spacing:0.06em">
-        Titta！ version <span id="appVersion">2026.09.21-b</span>
+        Titta！ version <span id="appVersion">2026.09.21-c</span>
       </span>
     </div>
   </div>
@@ -1619,23 +1619,27 @@ async function loadInitialTasks() {
   if (hash && hash.startsWith('p_')) {
     // 形式が不正なIDは採用しない（不正なFirebaseパスを指定されるのを防ぐ）
     if (isValidPersonalId(hash)) {
-      // この端末が発行したIDではないIDで開かれた場合、
-      // 共有URLを踏んだか、ホーム画面から起動したかのどちらか。
-      // いずれも「初めての利用者」ではないのでチュートリアルは出さない。
-      // （チュートリアル済みフラグは端末ごとの保存で、共有先やホーム画面アプリは
-      //   別の保管庫を持つため、これを見ないと毎回初回扱いになってしまう）
-      if (localStorage.getItem('personalId') !== hash) {
+      // このIDを「この端末自身が発行した」のでなければ、共有URLを踏んだか
+      // ホーム画面から起動したということ。初めての利用者ではないので
+      // チュートリアルは出さない。
+      //
+      // 判定に personalId を使ってはいけない。共有URLで一度開いた時点で
+      // personalId にもそのIDが入り、次回以降は「一致」してしまうため。
+      // 発行元を別のキーで持ち、それと照合する。
+      if (localStorage.getItem('pidSelfMade') !== hash) {
         localStorage.setItem('tutorialDone', '1');
       }
       localStorage.setItem('personalId', hash);
     } else {
       const pid = localStorage.getItem('personalId') || genPersonalId();
       localStorage.setItem('personalId', pid);
+      localStorage.setItem('pidSelfMade', pid);   // この端末が発行した印
       history.replaceState(null, '', '#' + pid);
     }
   } else if (!hash) {
     const pid = localStorage.getItem('personalId') || genPersonalId();
     localStorage.setItem('personalId', pid);
+    localStorage.setItem('pidSelfMade', pid);     // この端末が発行した印
     history.replaceState(null, '', '#' + pid);
   }
 
